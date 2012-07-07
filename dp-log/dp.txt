@@ -1,0 +1,37 @@
+project-backlog:
+  - story: rebuild 指令，重建整份文件並補上時間等資訊
+    note: >
+        * 讀取時依照傳統方式讀取
+        * 寫出時使用 yaml.Nodes 搭配 yaml.serialize 實作
+        * rebuild 前留存備份 (最好可保存多份)
+    importance: high
+    value: -
+    point: 6
+    sub-story:
+      - story: rebuild 時給各個 story 與 task 一個 ID 與給定建立時間
+        note: >
+          * 當 story/task 沒有內容時，視為還不存在並且不給定 ID 與建立時間
+        task:
+          - t: 檢查 story 或 t 標記下有沒有值，沒有的話就不給定 ID
+      - story: rebuild 時整理與給定產生 log 的時間
+      - story: project-backlog 與 task 下的 item 如果是單純的值的話就自動變成 story 或 t 物件
+    demo-method: >
+        * 執行 rebuild 然後看結果
+    task:
+      - t: 轉換成物件
+        note: 物件轉換優先順序 - story > task
+        sub-task:
+          - t: 實作 create_story_object()
+            note: 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 story 鍵值, 完成後當沒有 ID 時且有 story 值時給定一個 ID 並設定建立時間
+            estimated-time: 3
+            status: new
+            test-method: 傳入可能值的組合
+          - 實作 create_task_object() - 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 t 鍵值, 完成後當沒有 ID 時且有 t 值時給定一個 ID 並設定建立時間
+          - 實作 create_log_object() - 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 l 鍵值
+      - 寫出成 YAML
+  - story: 增加 story 的指令 add-story 或是 add-story-to
+  - story: 增加 task 的指令 add-task 或是 add-task-to
+  - story: 將 task 給 check-out 與 check-in 的指令
+    importance: low
+    note: 先用 log 進行進度追蹤
+  - story: 標示 task 狀況為 done 的指令
