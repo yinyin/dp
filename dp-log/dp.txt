@@ -45,4 +45,5 @@ project-backlog:
   - story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔以及使用者識別資訊，當找不到時往上層資料夾找
     note: 使用者識別資訊先放環境變數，以簡單實作
   - story: 管理 issue (增加 issue-backlog ?)
+  - story: 可將太舊的 story 給 archive 到其他檔案
 
