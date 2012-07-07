@@ -18,6 +18,9 @@ project-backlog:
     demo-method: >
         * 執行 rebuild 然後看結果
     task:
+      - t: 實作 load_dp_file()
+      - t: 實作 write_dp_file()
+        note: 寫檔前先將舊檔案備份，完成讀取後再寫入到原檔 (用 rename 可能會造成問題，不過備份檔 rotate 就用 rename 吧)
       - t: 轉換成物件
         note: 物件轉換優先順序 - story > task
         sub-task:
@@ -35,3 +38,4 @@ project-backlog:
     importance: low
     note: 先用 log 進行進度追蹤
   - story: 標示 task 狀況為 done 的指令
+  - story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔，當找不到時往上層資料夾找
