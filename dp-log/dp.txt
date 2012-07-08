@@ -5,7 +5,7 @@ product-backlog:
         * 讀取時依照傳統方式讀取
         * 寫出時使用 yaml.Nodes 搭配 yaml.serialize 實作
         * rebuild 前留存備份 (最好可保存多份)
-    importance: high
+    order: high
     value: -
     point: 6
     sub-story:
@@ -39,7 +39,7 @@ product-backlog:
   - story: 增加 story 的指令 add-story 或是 add-story-to
   - story: 增加 task 的指令 add-task 或是 add-task-to
   - story: 將 task 給 check-out 與 check-in 的指令
-    importance: low
+    order: low
     note: 先用 log 進行進度追蹤
   - story: 標示 task 狀況為 done 的指令
   - story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔以及使用者識別資訊，當找不到時往上層資料夾找
