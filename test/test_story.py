@@ -59,6 +59,21 @@ class TestStoriesLoad(unittest.TestCase):
 			self.assertEqual(mm, storylist[idx].story)
 			idx = idx + 1
 	# ### def test_load_stories_5
+	
+	def test_load_stories_6(self):
+		""" load story with dict object (basic information) """
+		
+		m = {"story": "a story of development.", "note": "* multiple line\n* notes and notes",
+				"order": "normal", "value": "", "point": 7, "demo-method": "use demo system to demo."}
+		storylist = dpcore.load_stories(m)
+		
+		self.assertEqual(m["story"], storylist[0].story)
+		self.assertEqual(m["note"], storylist[0].note)
+		self.assertEqual(m["order"], storylist[0].imp_order)
+		self.assertEqual(None, storylist[0].imp_value)
+		self.assertEqual(m["demo-method"], storylist[0].demo_method)
+		self.assertTrue(storylist[0].story_id is not None)
+	# ### def test_load_stories_6
 # ### class TestStoriesLoad
 
 
