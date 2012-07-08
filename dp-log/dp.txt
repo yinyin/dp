@@ -1,4 +1,4 @@
-project-backlog:
+product-backlog:
   - story: 主要的物件會有 id (C - story, T - task, Z - issue), 次要的物件 (ex: log) 暫不處理，考慮使用序號
   - story: rebuild 指令，重建整份文件並補上時間等資訊
     note: >
