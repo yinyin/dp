@@ -116,12 +116,17 @@ def load_stories(m):
 		
 		sort_order_key = None
 		
+		is_accepted_any_attribute = False
+		
 		if "story-id" in m:
 			story_id = str(m["story-id"])
+			is_accepted_any_attribute = True
 		if "story" in m:
 			story = _convert_to_string(m["story"])
+			is_accepted_any_attribute = True
 		if "note" in m:
 			note = _convert_to_string(m["note"])
+			is_accepted_any_attribute = True
 		if "order" in m:
 			imp_order = _convert_to_string(m["order"])
 			if imp_order is not None:
@@ -132,14 +137,19 @@ def load_stories(m):
 					sort_order_key = 5
 				elif "LOG" == v:
 					sort_order_key = 1
+			is_accepted_any_attribute = True
 		if "value" in m:
 			imp_value = _convert_to_string(m["value"])
+			is_accepted_any_attribute = True
 		if "point" in m:
 			point = _convert_to_integer(m["point"])
+			is_accepted_any_attribute = True
 		if "demo-method" in m:
 			demo_method = _convert_to_string(m["demo-method"])
+			is_accepted_any_attribute = True
 		
-		obj = Story(story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key)
-		result = (obj,)
+		if is_accepted_any_attribute:
+			obj = Story(story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key)
+			result = (obj,)
 	return result
 # ### def load_stories
