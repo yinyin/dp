@@ -102,8 +102,7 @@ def load_stories(m):
 		for mm in m:
 			result.extend(load_stories(mm))
 	elif isinstance(m, (str, unicode,)):
-		pass
-		# TODO
+		return load_stories({"story": m})
 	elif isinstance(m, dict):
 		story_id = None
 		story = None
