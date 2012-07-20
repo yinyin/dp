@@ -39,7 +39,9 @@ def _allocate_story_id(storyobj):
 		
 
 class Story(object):
-	def __init__(self, story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key=None):
+	def __init__(self, story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key=None, *args, **kwargs):
+		super(Story, self).__init__(*args, **kwargs)
+		
 		self.story_id = story_id
 		self.story = story
 		self.note = note
