@@ -70,6 +70,15 @@ class Story(object):
 # ### class Story
 
 
+class Task(object):
+	def __init__(self, task_id, task, note, estimated_time, status, test_method, *args, **kwargs):
+		super(Task, self).__init__(*args, **kwargs)
+		
+		pass
+	# ### def __init__
+# ### class Task
+
+
 def _convert_to_string(v):
 	try:
 		v = unicode(v).strip()
