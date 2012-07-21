@@ -72,9 +72,10 @@ def allocate_object_id(idableobj, idprefix, objectrepo):
 
 
 
-_every_story = {}
+_every_object = {}
 
-class Story(object):
+
+class Story(IdentifiableObject):
 	def __init__(self, story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key=None, *args, **kwargs):
 		super(Story, self).__init__(*args, **kwargs)
 
@@ -96,13 +97,27 @@ class Story(object):
 		"""
 
 		if self.story_id is None:
-			self.story_id = _allocate_story_id(self)
+			self.story_id = allocate_object_id(self, "C", _every_object)
 	# ### def __prepare_story_id
 
 	def __repr__(self):
 		return "%s.Story(story_id=%r, story=%r, note=%r, imp_order=%r, imp_value=%r, point=%r, demo_method=%r, sort_order_key=%r)" % (self.__module__, self.story_id, self.story, self.note, self.imp_order, self.imp_value, self.point, self.demo_method, self.sort_order_key,)
 	# ### def __repr__
 
+
+	def get_object_id(self):
+		return self.story_id
+	# ### def get_object_id
+
+	def set_object_id(self, new_id):
+		self.story_id = new_id
+	# ### def get_object_id
+
+	def get_object_signature(self):
+		if self.story is None:
+			return None
+		return str(self)
+	# ### def get_object_signature
 # ### class Story
 
 
