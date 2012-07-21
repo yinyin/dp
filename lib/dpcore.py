@@ -74,6 +74,9 @@ def allocate_object_id(idableobj, idprefix, objectrepo):
 
 _every_object = {}
 
+_all_story = []
+_all_task = []
+
 
 class Story(IdentifiableObject):
 	def __init__(self, story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key=None, *args, **kwargs):
@@ -91,6 +94,8 @@ class Story(IdentifiableObject):
 
 		if self.story_id is not None:
 			_every_object[self.story_id] = self
+
+		_all_story.append(self)
 	# ### def __init__
 
 	def prepare_story_id(self):
@@ -136,6 +141,8 @@ class Task(IdentifiableObject):
 
 		if self.task_id is not None:
 			_every_object[self.task_id] = self
+
+		_all_task.append(self)
 	# ### def __init__
 
 	def prepare_task_id(self):
@@ -275,6 +282,13 @@ def load_stories(m):
 	return result
 # ### def load_stories
 
+def prepare_story_id():
+	""" generate IDs for stories """
+
+	for story in _all_story:
+		story.prepare_story_id()
+# ### def prepare_story_id
+
 
 def load_tasks(m):
 	""" load tasks from m
@@ -329,5 +343,12 @@ def load_tasks(m):
 			result = (obj,)
 	return result
 # ### def load_tasks
+
+def prepare_task_id():
+	""" generate IDs for tasks """
+
+	for task in _all_task:
+		task.prepare_task_id()
+# ### def prepare_task_id
 
 

@@ -66,6 +66,7 @@ class TestTaskLoad(unittest.TestCase):
 		m = {"t": "a task of development.", "note": "* multiple line\n* notes and notes",
 				"point": 7, "estimated-time": 3, "status": "new", "test-method": "use demo system to demo."}
 		tasklist = dpcore.load_tasks(m)
+		dpcore.prepare_task_id()
 
 		self.assertEqual(m["t"], tasklist[0].task)
 		self.assertEqual(m["note"], tasklist[0].note)
