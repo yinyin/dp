@@ -123,13 +123,48 @@ class Story(IdentifiableObject):
 # ### class Story
 
 
-class Task(object):
-	def __init__(self, task_id, task, note, estimated_time, status, test_method, *args, **kwargs):
+class Task(IdentifiableObject):
+	def __init__(self, task_id, task, note, estimated_time, point, status, test_method, *args, **kwargs):
 		super(Task, self).__init__(*args, **kwargs)
 
-		pass
+		self.task_id = task_id
+		self.task = task
+		self.note = note
+		self.estimated_time = estimated_time
+		self.point = point
+		self.status = status
+		self.test_method = test_method
+
+		self.__prepare_task_id()
 	# ### def __init__
+
+	def __prepare_task_id(self):
+		if self.task_id is None:
+			self.task_id = allocate_object_id(self, "T", _every_object)
+		else:
+			_every_object[self.task_id] = self
+	# ### def __prepare_task_id
+
+	def __repr__(self):
+		return "%s.Task(task_id=%r, task=%r, note=%r, estimated_time=%r, point=%r, status=%r, test_method=%r)" % (self.__module__, self.task_id, self.task, self.note, self.estimated_time, self.point, self.status, self.test_method,)
+	# ### def __repr__
+
+
+	def get_object_id(self):
+		return self.task_id
+	# ### def get_object_id
+
+	def set_object_id(self, new_id):
+		self.task_id = new_id
+	# ### def get_object_id
+
+	def get_object_signature(self):
+		if self.task is None:
+			return None
+		return str(self)
+	# ### def get_object_signature
 # ### class Task
+
 
 
 def _convert_to_string(v):
@@ -241,3 +276,60 @@ def load_stories(m):
 			result = (obj,)
 	return result
 # ### def load_stories
+
+
+def load_tasks(m):
+	""" load tasks from m
+	"""
+
+	result = []
+
+	if isinstance(m, (list, tuple,)):
+		for mm in m:
+			result.extend(load_tasks(mm))
+	elif isinstance(m, (str, unicode,)):
+		m = m.strip()
+		if len(m) > 0:
+			return load_tasks({"t": m})
+	elif isinstance(m, dict):
+		task_id = None
+		task = None
+		note = None
+		estimated_time = None
+		point = None
+		status = None
+		test_method = None
+
+		is_accepted_any_attribute = False
+
+		if "t-id" in m:
+			task_id = str(m["t-id"])
+			is_accepted_any_attribute = True
+		if "t" in m:
+			task = _convert_to_string(m["t"])
+			is_accepted_any_attribute = True
+		if "note" in m:
+			note = _convert_to_string(m["note"])
+			is_accepted_any_attribute = True
+		if "estimated-time" in m:
+			estimated_time = _convert_to_integer(m["estimated-time"])
+			is_accepted_any_attribute = True
+		if "point" in m:
+			point = _convert_to_integer(m["point"])
+			is_accepted_any_attribute = True
+		if "status" in m:
+			status = _convert_to_string(m["status"])
+			if 'new' == status:
+				status = None
+			is_accepted_any_attribute = True
+		if "test-method" in m:
+			test_method = _convert_to_string(m["test-method"])
+			is_accepted_any_attribute = True
+
+		if is_accepted_any_attribute:
+			obj = Task(task_id, task, note, estimated_time, point, status, test_method)
+			result = (obj,)
+	return result
+# ### def load_tasks
+
+
