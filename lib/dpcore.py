@@ -98,6 +98,8 @@ class Story(IdentifiableObject):
 
 		if self.story_id is None:
 			self.story_id = allocate_object_id(self, "C", _every_object)
+		else:
+			_every_object[self.story_id] = self
 	# ### def __prepare_story_id
 
 	def __repr__(self):
