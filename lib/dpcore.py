@@ -1,8 +1,10 @@
 
 # -*- coding: utf-8 -*-
 
+import re
 import hashlib
 import base64
+import datetime
 
 
 
@@ -171,6 +173,20 @@ class Task(IdentifiableObject):
 # ### class Task
 
 
+class Log(object):
+	def __init__(self, log_id, log, record_time, author, action=None, *args, **kwargs):
+
+		super(Log, self).__init__(*args, **kwargs)
+
+		self.log_id = log_id
+		self.log = log
+		self.record_time = record_time
+		self.author = author
+		self.action = action
+	# ### def __init__
+# ### class Log
+
+
 
 def _convert_to_string(v):
 	""" convert given object to string
@@ -217,6 +233,87 @@ def _convert_to_integer(v):
 
 	return v
 # ### def _convert_to_integer
+
+__regex_date = re.compile('(([0-9]{2,4})(-|/))?([0-9]+)(-|/)([0-9]+)(.*)$')
+__regex_time_1 = re.compile('([0-9]{1,2})(\:|,|.)([0-9]{1,2})((\:|,|.)([0-9]{1,2}))?')
+__regex_time_2 = re.compile('([0-9]{2})(([0-9]{2})([0-9]{2})?)?')
+def _convert_to_datetime(v):
+	""" convert given object to datetime
+
+	If input object is None, empty string or non-numerical string then None will be return
+
+	Argument:
+		v - the object to be convert
+	Return:
+		resulted integer or None if given object is empty
+	"""
+
+	if v is None:
+		return None
+
+	try:
+		v = str(v)
+		n = datetime.datetime.now()
+
+		year = n.year
+		month = n.month
+		day = n.day
+		hour = 0
+		minute = 0
+		second = 0
+
+		matched = False
+
+		# {{{ matching date part
+		m = __regex_date.search(v)
+		if m is not None:
+			m_year = _convert_to_integer(m.group(2))
+			if m_year is not None:
+				if m_year < 70:
+					year = m_year + 2000
+				elif m_year < 1000:
+					year = m_year + 1900
+				else:
+					year = m_year
+			month = int(m.group(4))
+			day = int(m.group(6))
+
+			v = m.group(7)
+
+			matched = True
+		# }}} matching date part
+
+		# {{{ matching time part
+		m = __regex_time_1.search(v)
+		if m is not None:
+			hour = int(m.group(1))
+			minute = int(m.group(3))
+			m_second = _convert_to_integer(m.group(6))
+			if m_second is not None:
+				second = m_second
+
+			matched = True
+		else:
+			m = __regex_time_2.search(v)
+			if m is not None:
+				hour = int(m.group(1))
+				m_minute = _convert_to_integer(m.group(3))
+				if m_minute is not None:
+					minute = m_minute
+				m_second = _convert_to_integer(m.group(4))
+				if m_second is not None:
+					second = m_second
+
+				matched = True
+		# }}} matching time part
+
+		if matched:
+			return datetime.datetime(year, month, day, hour, minute, second)
+	except Exception as e:
+		print e
+		pass
+	return None
+# ### def _convert_to_datetime
 
 
 
@@ -350,5 +447,51 @@ def prepare_task_id():
 	for task in _all_task:
 		task.prepare_task_id()
 # ### def prepare_task_id
+
+
+def load_logs(m):
+	""" load logs from m
+	"""
+
+	result = []
+
+	if isinstance(m, (list, tuple,)):
+		for mm in m:
+			result.extend(load_logs(mm))
+	elif isinstance(m, (str, unicode,)):
+		m = m.strip()
+		if len(m) > 0:
+			return load_logs({"l": m})
+	elif isinstance(m, dict):
+		log_id = None
+		log = None
+		record_time = None
+		author = None
+		action = None
+
+		is_accepted_any_attribute = False
+
+		if "l-id" in m:
+			log_id = str(m["l-id"])
+			is_accepted_any_attribute = True
+		if "l" in m:
+			log = _convert_to_string(m["l"])
+			is_accepted_any_attribute = True
+		if "record-time" in m:
+			record_time = _convert_to_datetime(m["record-time"])
+			is_accepted_any_attribute = True
+		if "author" in m:
+			author = _convert_to_string(m["author"])
+			is_accepted_any_attribute = True
+		if "action" in m:
+			action = _convert_to_string(m["action"])
+			is_accepted_any_attribute = True
+
+		if is_accepted_any_attribute:
+			obj = Log(log_id, log, record_time, author, action)
+			result = (obj,)
+	return result
+# ### def load_logs
+
 
 
