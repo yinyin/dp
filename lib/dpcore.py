@@ -89,17 +89,16 @@ class Story(IdentifiableObject):
 
 		self.sort_order_key = sort_order_key
 
-		self.__prepare_story_id()
+		if self.story_id is not None:
+			_every_object[self.story_id] = self
 	# ### def __init__
 
-	def __prepare_story_id(self):
+	def prepare_story_id(self):
 		""" generate story-id if it is not present
 		"""
 
 		if self.story_id is None:
 			self.story_id = allocate_object_id(self, "C", _every_object)
-		else:
-			_every_object[self.story_id] = self
 	# ### def __prepare_story_id
 
 	def __repr__(self):
@@ -135,14 +134,13 @@ class Task(IdentifiableObject):
 		self.status = status
 		self.test_method = test_method
 
-		self.__prepare_task_id()
+		if self.task_id is not None:
+			_every_object[self.task_id] = self
 	# ### def __init__
 
-	def __prepare_task_id(self):
+	def prepare_task_id(self):
 		if self.task_id is None:
 			self.task_id = allocate_object_id(self, "T", _every_object)
-		else:
-			_every_object[self.task_id] = self
 	# ### def __prepare_task_id
 
 	def __repr__(self):
