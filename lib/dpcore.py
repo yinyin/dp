@@ -131,10 +131,21 @@ class Task(object):
 
 
 def _convert_to_string(v):
+	""" convert given object to string
+
+	If input object is None or empty string None then will be return
+
+	Argument:
+		v - the object to be convert
+	Return:
+		resulted unicode string or None if given object is empty
+	"""
+
 	try:
-		v = unicode(v).strip()
-		if 0 == len(v):
-			v = None
+		if v is not None:
+			v = unicode(v).strip()
+			if 0 == len(v):
+				v = None
 	except Exception as e:
 		v = None
 
@@ -142,17 +153,30 @@ def _convert_to_string(v):
 # ### def _convert_to_string
 
 def _convert_to_integer(v):
+	""" convert given object to integer
+
+	If input object is None, empty string or non-numerical string then None will be return
+
+	Argument:
+		v - the object to be convert
+	Return:
+		resulted integer or None if given object is empty
+	"""
+
 	try:
-		v = unicode(v).strip()
-		if 0 == len(v):
-			v = None
-		else:
-			v = int(v)
+		if v is not None:
+			v = unicode(v).strip()
+			if 0 == len(v):
+				v = None
+			else:
+				v = int(v)
 	except Exception as e:
 		v = None
 
 	return v
 # ### def _convert_to_integer
+
+
 
 def load_stories(m):
 	""" load stories from m
