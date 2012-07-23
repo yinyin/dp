@@ -128,6 +128,21 @@ class Story(IdentifiableObject):
 	# ### def get_object_signature
 # ### class Story
 
+class StoryContainer(object):
+	def __init__(self, *args, **kwargs):
+		super(StoryContainer, self).__init__(*args, **kwargs)
+
+		self.substory = []
+	# ### def __init__
+
+	def append_substory(self, substory):
+		if isinstance(substory, Story):
+			self.substory.append(substory)
+		elif isinstance(substory, (list, tuple,)):
+			self.substory.extend(substory)
+	# ### def append_substory
+# ### class StoryContainer
+
 
 class Task(IdentifiableObject):
 	def __init__(self, task_id, task, note, estimated_time, point, status, test_method, *args, **kwargs):
