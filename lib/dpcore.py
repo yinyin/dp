@@ -74,13 +74,59 @@ def allocate_object_id(idableobj, idprefix, objectrepo):
 
 
 
+class StoryContainer(object):
+	def __init__(self, *args, **kwargs):
+		super(StoryContainer, self).__init__(*args, **kwargs)
+
+		self.substory = []
+	# ### def __init__
+
+	def append_substory(self, substory):
+		if isinstance(substory, Story):
+			self.substory.append(substory)
+		elif isinstance(substory, (list, tuple,)):
+			self.substory.extend(substory)
+	# ### def append_substory
+# ### class StoryContainer
+
+class TaskContainer(object):
+	def __init__(self, *args, **kwargs):
+		super(TaskContainer, self).__init__(*args, **kwargs)
+
+		self.subtask = []
+	# ### def __init__
+
+	def append_subtask(self, subtask):
+		if isinstance(subtask, Task):
+			self.subtask.append(subtask)
+		elif isinstance(subtask, (list, tuple,)):
+			self.subtask.extend(subtask)
+	# ### def append_subtask
+# ### class TaskContainer
+
+class LogContainer(object):
+	def __init__(self, *args, **kwargs):
+		super(LogContainer, self).__init__(*args, **kwargs)
+
+		self.logrecord = []
+	# ### def __init__
+
+	def append_log(self, logrec):
+		if isinstance(logrec, Log):
+			self.logrecord.append(logrec)
+		elif isinstance(logrec, (list, tuple,)):
+			self.logrecord.extend(logrec)
+	# ### def append_log
+# ### class LogContainer
+
+
 _every_object = {}
 
 _all_story = []
 _all_task = []
 
 
-class Story(IdentifiableObject):
+class Story(IdentifiableObject, StoryContainer, TaskContainer, LogContainer):
 	def __init__(self, story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key=None, *args, **kwargs):
 		super(Story, self).__init__(*args, **kwargs)
 
@@ -128,23 +174,7 @@ class Story(IdentifiableObject):
 	# ### def get_object_signature
 # ### class Story
 
-class StoryContainer(object):
-	def __init__(self, *args, **kwargs):
-		super(StoryContainer, self).__init__(*args, **kwargs)
-
-		self.substory = []
-	# ### def __init__
-
-	def append_substory(self, substory):
-		if isinstance(substory, Story):
-			self.substory.append(substory)
-		elif isinstance(substory, (list, tuple,)):
-			self.substory.extend(substory)
-	# ### def append_substory
-# ### class StoryContainer
-
-
-class Task(IdentifiableObject):
+class Task(IdentifiableObject, TaskContainer, LogContainer):
 	def __init__(self, task_id, task, note, estimated_time, point, status, test_method, *args, **kwargs):
 		super(Task, self).__init__(*args, **kwargs)
 
@@ -187,22 +217,6 @@ class Task(IdentifiableObject):
 	# ### def get_object_signature
 # ### class Task
 
-class TaskContainer(object):
-	def __init__(self, *args, **kwargs):
-		super(TaskContainer, self).__init__(*args, **kwargs)
-
-		self.subtask = []
-	# ### def __init__
-
-	def append_subtask(self, subtask):
-		if isinstance(subtask, Task):
-			self.subtask.append(subtask)
-		elif isinstance(subtask, (list, tuple,)):
-			self.subtask.extend(subtask)
-	# ### def append_subtask
-# ### class TaskContainer
-
-
 class Log(object):
 	def __init__(self, log_id, log, record_time, author, action=None, *args, **kwargs):
 
@@ -219,21 +233,6 @@ class Log(object):
 		return "%s.Log(log_id=%r, log=%r, record_time=%r, author=%r, action=%r)" % (self.__module__, self.log_id, self.log, self.record_time, self.author, self.action,)
 	# ### def __repr__
 # ### class Log
-
-class LogContainer(object):
-	def __init__(self, *args, **kwargs):
-		super(LogContainer, self).__init__(*args, **kwargs)
-
-		self.logrecord = []
-	# ### def __init__
-
-	def append_log(self, logrec):
-		if isinstance(logrec, Log):
-			self.logrecord.append(logrec)
-		elif isinstance(logrec, (list, tuple,)):
-			self.logrecord.extend(logrec)
-	# ### def append_log
-# ### class TaskContainer
 
 
 
