@@ -82,12 +82,12 @@ class TestLogContainer(unittest.TestCase):
 		loglist2 = dpcore.load_logs("This is log 2.")
 
 		self.mockcontainer.append_log(loglist1[0])
-		self.assertEqual(len(self.mockcontainer.logs), 1)
-		self.assertEqual(loglist1[0], self.mockcontainer.logs[0])
+		self.assertEqual(len(self.mockcontainer.logrecord), 1)
+		self.assertEqual(loglist1[0], self.mockcontainer.logrecord[0])
 
 		self.mockcontainer.append_log(loglist2[0])
-		self.assertEqual(len(self.mockcontainer.logs), 2)
-		self.assertEqual(loglist2[0], self.mockcontainer.logs[1])
+		self.assertEqual(len(self.mockcontainer.logrecord), 2)
+		self.assertEqual(loglist2[0], self.mockcontainer.logrecord[1])
 	# ### def test_add_log_obj
 
 	def test_add_log_list(self):
@@ -95,14 +95,14 @@ class TestLogContainer(unittest.TestCase):
 		loglist2 = dpcore.load_logs(["This is log 2a.", "This is log 2b.",])
 
 		self.mockcontainer.append_log(loglist1)
-		self.assertEqual(len(self.mockcontainer.logs), 2)
+		self.assertEqual(len(self.mockcontainer.logrecord), 2)
 		for idx in range(len(loglist1)):
-			self.assertEqual(loglist1[idx], self.mockcontainer.logs[0+idx])
+			self.assertEqual(loglist1[idx], self.mockcontainer.logrecord[0+idx])
 
 		self.mockcontainer.append_log(loglist2)
-		self.assertEqual(len(self.mockcontainer.logs), 4)
+		self.assertEqual(len(self.mockcontainer.logrecord), 4)
 		for idx in range(len(loglist2)):
-			self.assertEqual(loglist2[idx], self.mockcontainer.logs[2+idx])
+			self.assertEqual(loglist2[idx], self.mockcontainer.logrecord[2+idx])
 	# ### def test_add_log_list
 # ### class TestLogContainer
 
