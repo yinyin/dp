@@ -78,6 +78,47 @@ class TestStoriesLoad(unittest.TestCase):
 # ### class TestStoriesLoad
 
 
+class MockStoryContainer_1(dpcore.StoryContainer):
+	def __init__(self):
+		super(MockStoryContainer_1, self).__init__();
+	# ### def __init__
+# ### class MockStoryContainer_1
+
+class TestStoryContainer(unittest.TestCase):
+	def setUp(self):
+		self.mockcontainer = MockStoryContainer_1()
+	# ### def setUp
+
+	def test_add_story_obj(self):
+		storylist1 = dpcore.load_stories("This is a story 1.")
+		storylist2 = dpcore.load_stories("This is a story 2.")
+
+		self.mockcontainer.append_substory(storylist1[0])
+		self.assertEqual(len(self.mockcontainer.substory), 1)
+		self.assertEqual(storylist1[0], self.mockcontainer.substory[0])
+
+		self.mockcontainer.append_substory(storylist2[0])
+		self.assertEqual(len(self.mockcontainer.substory), 2)
+		self.assertEqual(storylist2[0], self.mockcontainer.substory[1])
+	# ### def test_add_story_obj
+
+	def test_add_story_list(self):
+		storylist1 = dpcore.load_stories(["This is a story 1a.", "This is a story 1b.",])
+		storylist2 = dpcore.load_stories(["This is a story 2a.", "This is a story 2b.",])
+
+		self.mockcontainer.append_substory(storylist1)
+		self.assertEqual(len(self.mockcontainer.substory), 2)
+		for idx in range(len(storylist1)):
+			self.assertEqual(storylist1[idx], self.mockcontainer.substory[0+idx])
+
+		self.mockcontainer.append_substory(storylist2)
+		self.assertEqual(len(self.mockcontainer.substory), 4)
+		for idx in range(len(storylist2)):
+			self.assertEqual(storylist2[idx], self.mockcontainer.substory[2+idx])
+	# ### def test_add_story_list
+# ### class TestStoryContainer
+
+
 
 if __name__ == '__main__':
 	unittest.main()
