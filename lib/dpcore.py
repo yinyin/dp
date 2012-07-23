@@ -216,6 +216,21 @@ class Log(object):
 	# ### def __init__
 # ### class Log
 
+class LogContainer(object):
+	def __init__(self, *args, **kwargs):
+		super(LogContainer, self).__init__(*args, **kwargs)
+
+		self.logrecord = []
+	# ### def __init__
+
+	def append_log(self, logrec):
+		if isinstance(logrec, Log):
+			self.logrecord.append(logrec)
+		elif isinstance(logrec, (list, tuple,)):
+			self.logrecord.extend(logrec)
+	# ### def append_log
+# ### class TaskContainer
+
 
 
 def _convert_to_string(v):
