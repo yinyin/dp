@@ -389,6 +389,10 @@ def load_stories(m):
 
 		sort_order_key = None
 
+		sub_stories = None
+		sub_tasks = None
+		logrecords = None
+
 		is_accepted_any_attribute = False
 
 		if "story-id" in m:
@@ -420,9 +424,24 @@ def load_stories(m):
 		if "demo-method" in m:
 			demo_method = _convert_to_string(m["demo-method"])
 			is_accepted_any_attribute = True
+		if "sub-story" in m:
+			sub_stories = load_stories(m["sub-story"])
+			is_accepted_any_attribute = True
+		if "sub-task" in m:
+			sub_tasks = load_tasks(m["sub-task"])
+			is_accepted_any_attribute = True
+		if "log" in m:
+			logrecords = load_logs(m["log"])
+			is_accepted_any_attribute = True
 
 		if is_accepted_any_attribute:
 			obj = Story(story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key)
+			if sub_stories is not None:
+				obj.append_substory(sub_stories)
+			if sub_tasks is not None:
+				obj.append_subtask(sub_tasks)
+			if logrecords is not None:
+				obj.append_log(logrecords)
 			result = (obj,)
 	return result
 # ### def load_stories
@@ -457,6 +476,9 @@ def load_tasks(m):
 		status = None
 		test_method = None
 
+		sub_tasks = None
+		logrecords = None
+
 		is_accepted_any_attribute = False
 
 		if "t-id" in m:
@@ -482,9 +504,19 @@ def load_tasks(m):
 		if "test-method" in m:
 			test_method = _convert_to_string(m["test-method"])
 			is_accepted_any_attribute = True
+		if "sub-task" in m:
+			sub_tasks = load_tasks(m["sub-task"])
+			is_accepted_any_attribute = True
+		if "log" in m:
+			logrecords = load_logs(m["log"])
+			is_accepted_any_attribute = True
 
 		if is_accepted_any_attribute:
 			obj = Task(task_id, task, note, estimated_time, point, status, test_method)
+			if sub_tasks is not None:
+				obj.append_subtask(sub_tasks)
+			if logrecords is not None:
+				obj.append_log(logrecords)
 			result = (obj,)
 	return result
 # ### def load_tasks
@@ -543,3 +575,4 @@ def load_logs(m):
 
 
 
+# vim: ts=4 sw=4 ai nowarp
