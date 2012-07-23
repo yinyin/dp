@@ -79,6 +79,47 @@ class TestTaskLoad(unittest.TestCase):
 # ### class TestTaskLoad
 
 
+class MockTaskContainer_1(dpcore.TaskContainer):
+	def __init__(self):
+		super(MockTaskContainer_1, self).__init__();
+	# ### def __init__
+# ### class MockTaskContainer_1
+
+class TestTaskContainer(unittest.TestCase):
+	def setUp(self):
+		self.mockcontainer = MockTaskContainer_1()
+	# ### def setUp
+
+	def test_add_task_obj(self):
+		tasklist1 = dpcore.load_tasks("This is a task 1.")
+		tasklist2 = dpcore.load_tasks("This is a task 2.")
+
+		self.mockcontainer.append_subtask(tasklist1[0])
+		self.assertEqual(len(self.mockcontainer.subtask), 1)
+		self.assertEqual(tasklist1[0], self.mockcontainer.subtask[0])
+
+		self.mockcontainer.append_subtask(tasklist2[0])
+		self.assertEqual(len(self.mockcontainer.subtask), 2)
+		self.assertEqual(tasklist2[0], self.mockcontainer.subtask[1])
+	# ### def test_add_task_obj
+
+	def test_add_task_list(self):
+		tasklist1 = dpcore.load_tasks(["This is a task 1a.", "This is a task 1b.",])
+		tasklist2 = dpcore.load_tasks(["This is a task 2a.", "This is a task 2b.",])
+
+		self.mockcontainer.append_subtask(tasklist1)
+		self.assertEqual(len(self.mockcontainer.subtask), 2)
+		for idx in range(len(tasklist1)):
+			self.assertEqual(tasklist1[idx], self.mockcontainer.subtask[0+idx])
+
+		self.mockcontainer.append_subtask(tasklist2)
+		self.assertEqual(len(self.mockcontainer.subtask), 4)
+		for idx in range(len(tasklist2)):
+			self.assertEqual(tasklist2[idx], self.mockcontainer.subtask[2+idx])
+	# ### def test_add_task_list
+# ### class TestTaskContainer
+
+
 
 if __name__ == '__main__':
 	unittest.main()
