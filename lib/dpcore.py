@@ -187,6 +187,21 @@ class Task(IdentifiableObject):
 	# ### def get_object_signature
 # ### class Task
 
+class TaskContainer(object):
+	def __init__(self, *args, **kwargs):
+		super(TaskContainer, self).__init__(*args, **kwargs)
+
+		self.subtask = []
+	# ### def __init__
+
+	def append_subtask(self, subtask):
+		if isinstance(subtask, Task):
+			self.subtask.append(subtask)
+		elif isinstance(subtask, (list, tuple,)):
+			self.subtask.extend(subtask)
+	# ### def append_subtask
+# ### class TaskContainer
+
 
 class Log(object):
 	def __init__(self, log_id, log, record_time, author, action=None, *args, **kwargs):
