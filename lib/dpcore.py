@@ -214,6 +214,10 @@ class Log(object):
 		self.author = author
 		self.action = action
 	# ### def __init__
+
+	def __repr__(self):
+		return "%s.Log(log_id=%r, log=%r, record_time=%r, author=%r, action=%r)" % (self.__module__, self.log_id, self.log, self.record_time, self.author, self.action,)
+	# ### def __repr__
 # ### class Log
 
 class LogContainer(object):
