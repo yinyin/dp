@@ -84,7 +84,7 @@ class StoryContainer(object):
 	def append_substory(self, substory):
 		if isinstance(substory, Story):
 			self.substory.append(substory)
-		elif isinstance(substory, (list, tuple,)):
+		elif isinstance(substory, (list, tuple,)) and (len(substory) > 0):
 			self.substory.extend(substory)
 	# ### def append_substory
 # ### class StoryContainer
@@ -99,7 +99,7 @@ class TaskContainer(object):
 	def append_subtask(self, subtask):
 		if isinstance(subtask, Task):
 			self.subtask.append(subtask)
-		elif isinstance(subtask, (list, tuple,)):
+		elif isinstance(subtask, (list, tuple,)) and (len(subtask) > 0):
 			self.subtask.extend(subtask)
 	# ### def append_subtask
 # ### class TaskContainer
@@ -114,7 +114,7 @@ class LogContainer(object):
 	def append_log(self, logrec):
 		if isinstance(logrec, Log):
 			self.logrecord.append(logrec)
-		elif isinstance(logrec, (list, tuple,)):
+		elif isinstance(logrec, (list, tuple,)) and (len(logrec) > 0):
 			self.logrecord.extend(logrec)
 	# ### def append_log
 # ### class LogContainer
