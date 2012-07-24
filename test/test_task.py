@@ -121,7 +121,7 @@ class TestTaskYAMLnodeDump(unittest.TestCase):
 			self.assertEqual(tasklist_comp[idx].note, tasklist_orig[idx].note)
 		self.assertEqual(1, len(tasklist_comp[1].subtask))
 	# ### def test_dump_2
-# ### class TestStoryYAMLnodeDump
+# ### class TestTaskYAMLnodeDump
 
 
 class MockTaskContainer_1(dpcore.TaskContainer):
