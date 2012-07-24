@@ -930,7 +930,7 @@ def main():
 
 	proj = read_project(_rt_config.active_projfile)
 	
-	if not command_add_story(proj, cmdargs):
+	if not cmdfunc(proj, cmdargs):
 		sys.exit(3)
 	
 	do_backup_project(_rt_config.active_projfile)
