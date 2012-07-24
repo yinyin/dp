@@ -568,7 +568,7 @@ def yamlnodedump_stories(e):
 		
 		mapping = []
 		
-		_attach_mapping_value(mapping, u"story-id", e.story_id, empty_node, False)
+		_attach_mapping_value(mapping, u"story-id", e.story_id)
 		_attach_mapping_value(mapping, u"story", e.story, empty_node, True)
 		_attach_mapping_value(mapping, u"note", e.note, empty_node, True)
 		_attach_mapping_value(mapping, u"order", e.imp_order, empty_node, False)
@@ -673,7 +673,7 @@ def yamlnodedump_tasks(e):
 		
 		mapping = []
 		
-		_attach_mapping_value(mapping, u"t-id", e.task_id, empty_node, False)
+		_attach_mapping_value(mapping, u"t-id", e.task_id)
 		_attach_mapping_value(mapping, u"t", e.task, empty_node, True)
 		_attach_mapping_value(mapping, u"note", e.note, empty_node, True)
 		_attach_mapping_value(mapping, u"estimated-time", e.estimated_time, empty_node, False)
@@ -745,7 +745,7 @@ def yamlnodedump_logs(e):
 		
 		mapping = []
 		
-		_attach_mapping_value(mapping, u"l-id", e.log_id, empty_node, False)
+		_attach_mapping_value(mapping, u"l-id", e.log_id)
 		_attach_mapping_value(mapping, u"l", e.log, empty_node, True)
 		_attach_mapping_value(mapping, u"record-time", e.record_time, empty_node, False)
 		_attach_mapping_value(mapping, u"author", e.author, empty_node, False)
