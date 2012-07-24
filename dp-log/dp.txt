@@ -48,7 +48,7 @@ product-backlog:
         則視為 l 鍵值
     log:
     - l: 增加 log 樣本
-      record-time: '2012-07-19 19:51:00'
+      record-time: 2012-07-19 19:51:00
       author: Yinyin L
   - t-id: Tx6KRU9Xwp99vuAd9IftsgA
     t: 寫出成 YAML
@@ -71,3 +71,7 @@ product-backlog:
   story: 管理 issue (增加 issue-backlog ?)
 - story-id: C7wO9uUlf5NIV4pf3AgOhTg
   story: 可將太舊的 story 給 archive 到其他檔案
+  sub-story:
+  - story-id: CgvdWczgZtsjyXEeaRD9zqw
+    story: 要避免專案內各 ID 與 archive 內的 ID 重複
+    note: 可在讀取專案時還是要讀入 archive 的內容來避免
