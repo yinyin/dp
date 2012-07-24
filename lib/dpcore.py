@@ -895,15 +895,16 @@ def command_add_task(proj, args):
 
 def do_backup_project(filename, maxbackup=9):
 	for idx in range(maxbackup, 1, -1):
-		tgt_filename = ".".join(filename, str(idx))
-		prv_filename = ".".join(filename, str(idx-1))
+		tgt_filename = ".".join( (filename, str(idx)) )
+		prv_filename = ".".join( (filename, str(idx-1)) )
 		try:
 			os.unlink(tgt_filename)
 		except:
 			pass
-		os.rename(prv_filename, tgt_filename)
+		if os.access(prv_filename, os.F_OK):
+			os.rename(prv_filename, tgt_filename)
 	
-	tgt_filename = ".".join(filename, "1")
+	tgt_filename = ".".join( (filename, "1") )
 	os.rename(filename, tgt_filename)
 # ### def do_backup_project
 
