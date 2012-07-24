@@ -1,53 +1,73 @@
 product-backlog:
-  - story: "主要的物件會有 id (C - story, T - task, Z - issue), 次要的物件 (ex: log) 暫不處理，考慮使用序號"
-  - story: rebuild 指令，重建整份文件並補上時間等資訊
-    note: |
-        * 讀取時依照傳統方式讀取
-        * 寫出時使用 yaml.Nodes 搭配 yaml.serialize 實作
-        * rebuild 前留存備份 (最好可保存多份)
-    order: high
-    value: N/A
-    point: 6
-    sub-story:
-      - story: rebuild 時給各個 story 與 task 一個 ID 與給定建立時間
-        note: |
-          * 當 story/task 沒有內容時，視為還不存在並且不給定 ID 與建立時間
-        task:
-          - t: 檢查 story 或 t 標記下有沒有值，沒有的話就不給定 ID
-      - story: rebuild 時整理與給定產生 log 的時間
-      - story: project-backlog 與 task 下的 item 如果是單純的值的話就自動變成 story 或 t 物件
-    demo-method: |
-        * 執行 rebuild 然後看結果
+- story-id: C9znAj8gfpaCmBeQa2wCoKg
+  story: '主要的物件會有 id (C - story, T - task, Z - issue), 次要的物件 (ex: log) 暫不處理，考慮使用序號'
+- story-id: CkhKPbtZP6sCVXnYoDkOTUw
+  story: rebuild 指令，重建整份文件並補上時間等資訊
+  note: |-
+    * 讀取時依照傳統方式讀取
+    * 寫出時使用 yaml.Nodes 搭配 yaml.serialize 實作
+    * rebuild 前留存備份 (最好可保存多份)
+  order: high
+  value: N/A
+  point: 6
+  sub-story:
+  - story-id: CPQg8hovpmlR6oitUT0BmOQ
+    story: rebuild 時給各個 story 與 task 一個 ID 與給定建立時間
+    note: '* 當 story/task 沒有內容時，視為還不存在並且不給定 ID 與建立時間'
     task:
-      - t: 定義 story 物件
-        test-method: 
-      - t: 實作 load_dp_file()
-      - t: 實作 write_dp_file()
-        note: 寫檔前先將舊檔案備份，完成讀取後再寫入到原檔 (用 rename 可能會造成問題，不過備份檔 rotate 就用 rename 吧)
-      - t: 轉換成物件
-        note: 物件轉換優先順序 - story > task
-        sub-task:
-          - t: 實作 create_story_object()
-            note: 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 story 鍵值, 完成後當沒有 ID 時且有 story 值時給定一個 ID 並設定建立時間
-            estimated-time: 3
-            status: new
-            test-method: 傳入可能值的組合
-          - 實作 create_task_object() - 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 t 鍵值, 完成後當沒有 ID 時且有 t 值時給定一個 ID 並設定建立時間
-          - 實作 create_log_object() - 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 l 鍵值
-        log:
-          - record-time: 2012-07-19 19:51:00
-            author: Yinyin L
-            l: 增加 log 樣本
-      - 寫出成 YAML
-  - 物件狀態「全新」時會出現所有可填欄位，所謂全新是指剛給定 ID 時
-  - story: 增加 story 的指令 add-story 或是 add-story-to
-  - story: 增加 task 的指令 add-task 或是 add-task-to
-  - story: 將 task 給 check-out 與 check-in 的指令
-    order: low
-    note: 先用 log 進行進度追蹤
-  - story: 標示 task 狀況為 done 的指令
-  - story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔以及使用者識別資訊，當找不到時往上層資料夾找
-    note: 使用者識別資訊先放環境變數，以簡單實作
-  - story: 管理 issue (增加 issue-backlog ?)
-  - story: 可將太舊的 story 給 archive 到其他檔案
-
+    - t-id: TXziJidzClwYymTAjDlONQA
+      t: 檢查 story 或 t 標記下有沒有值，沒有的話就不給定 ID
+  - story-id: Cqq28BRXWH70ZmfX60xVwPA
+    story: rebuild 時整理與給定產生 log 的時間
+  - story-id: CU4Iyw7fnlgeSMVncjMMYXg
+    story: project-backlog 與 task 下的 item 如果是單純的值的話就自動變成 story 或 t 物件
+  demo-method: '* 執行 rebuild 然後看結果'
+  task:
+  - t-id: TqLKHuBXvWV6KEbIPT8XUWw
+    t: 定義 story 物件
+  - t-id: T95PPngozy6GZr0bNxzryGg
+    t: 實作 load_dp_file()
+  - t-id: TwXA3fTZusyQP3TeuT2WbKg
+    t: 實作 write_dp_file()
+    note: 寫檔前先將舊檔案備份，完成讀取後再寫入到原檔 (用 rename 可能會造成問題，不過備份檔 rotate 就用 rename 吧)
+  - t-id: Tr6BiUJok5Gi8Ta9ZpzCSoQ
+    t: 轉換成物件
+    note: 物件轉換優先順序 - story > task
+    sub-task:
+    - t-id: TOBhIB3RyCkxKY46TZAw9gg
+      t: 實作 create_story_object()
+      note: 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string 則視為 story 鍵值, 完成後當沒有
+        ID 時且有 story 值時給定一個 ID 並設定建立時間
+      estimated-time: 3
+      test-method: 傳入可能值的組合
+    - t-id: T5fZeMyofiy6gXLcMGDxjyw
+      t: 實作 create_task_object() - 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string
+        則視為 t 鍵值, 完成後當沒有 ID 時且有 t 值時給定一個 ID 並設定建立時間
+    - t-id: T3LdE7KZGXfWJdPtw6ZrBGA
+      t: 實作 create_log_object() - 當傳入的為 - list 則遞迴每個項目, dict 則看能造多少, scalar::string
+        則視為 l 鍵值
+    log:
+    - l: 增加 log 樣本
+      record-time: '2012-07-19 19:51:00'
+      author: Yinyin L
+  - t-id: Tx6KRU9Xwp99vuAd9IftsgA
+    t: 寫出成 YAML
+- story-id: Ck9GHKs0JWIj5dV6oxnj4wg
+  story: 物件狀態「全新」時會出現所有可填欄位，所謂全新是指剛給定 ID 時
+- story-id: CSx6nuwtd9OWqijm8hjDhoQ
+  story: 增加 story 的指令 add-story 或是 add-story-to
+- story-id: Ct4MvMRXPPttU1eMWjb2Nzg
+  story: 增加 task 的指令 add-task 或是 add-task-to
+- story-id: CnEWxlLhmLIMY9CGZNzQAxw
+  story: 將 task 給 check-out 與 check-in 的指令
+  note: 先用 log 進行進度追蹤
+  order: low
+- story-id: CYPQV1AHmYevCXeO1v1do0g
+  story: 標示 task 狀況為 done 的指令
+- story-id: CSY1WYmZXaiBpPoHTCpon1Q
+  story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔以及使用者識別資訊，當找不到時往上層資料夾找
+  note: 使用者識別資訊先放環境變數，以簡單實作
+- story-id: CBEgYHETdlnZTisvRoiyD4g
+  story: 管理 issue (增加 issue-backlog ?)
+- story-id: C7wO9uUlf5NIV4pf3AgOhTg
+  story: 可將太舊的 story 給 archive 到其他檔案
