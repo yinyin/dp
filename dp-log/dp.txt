@@ -17,6 +17,11 @@ product-backlog:
     task:
     - t-id: TXziJidzClwYymTAjDlONQA
       t: 檢查 story 或 t 標記下有沒有值，沒有的話就不給定 ID
+      status: DONE
+      log:
+      - l: mark task as done.
+        record-time: 2012-07-24 18:40:49.516715
+        author: Yinyin L <yinyin@pisces.local>
   - story-id: Cqq28BRXWH70ZmfX60xVwPA
     story: rebuild 時整理與給定產生 log 的時間
   - story-id: CU4Iyw7fnlgeSMVncjMMYXg
