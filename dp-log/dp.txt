@@ -1,7 +1,7 @@
 product-backlog:
   - story: "主要的物件會有 id (C - story, T - task, Z - issue), 次要的物件 (ex: log) 暫不處理，考慮使用序號"
   - story: rebuild 指令，重建整份文件並補上時間等資訊
-    note: >
+    note: |
         * 讀取時依照傳統方式讀取
         * 寫出時使用 yaml.Nodes 搭配 yaml.serialize 實作
         * rebuild 前留存備份 (最好可保存多份)
@@ -10,13 +10,13 @@ product-backlog:
     point: 6
     sub-story:
       - story: rebuild 時給各個 story 與 task 一個 ID 與給定建立時間
-        note: >
+        note: |
           * 當 story/task 沒有內容時，視為還不存在並且不給定 ID 與建立時間
         task:
           - t: 檢查 story 或 t 標記下有沒有值，沒有的話就不給定 ID
       - story: rebuild 時整理與給定產生 log 的時間
       - story: project-backlog 與 task 下的 item 如果是單純的值的話就自動變成 story 或 t 物件
-    demo-method: >
+    demo-method: |
         * 執行 rebuild 然後看結果
     task:
       - t: 定義 story 物件
