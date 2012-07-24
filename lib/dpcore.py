@@ -574,5 +574,32 @@ def load_logs(m):
 # ### def load_logs
 
 
+class DevelopmentProject(object):
+	def __init__(self, product_backlog, tracked_issue):
+		self.product_backlog = product_backlog
+		self.tracked_issue = tracked_issue
+	# ### def __init__
+# ### class DevelopmentProject
+
+
+def load_project(c):
+	""" load dp document
+	"""
+
+	product_backlog = None
+	tracked_issue = None
+	
+	if "product-backlog" in c:
+		product_backlog = load_stories(c["product-backlog"])
+		
+		# TODO: load issues
+	else:
+		product_backlog = load_stories(c)
+	
+	dpobj = DevelopmentProject(product_backlog, tracked_issue)
+	return dpobj
+# ### def load_project
+
+
 
 # vim: ts=4 sw=4 ai nowarp
