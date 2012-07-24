@@ -6,6 +6,8 @@ import hashlib
 import base64
 import datetime
 
+import yaml
+
 
 
 class IdentifiableObject(object):
@@ -71,6 +73,15 @@ def allocate_object_id(idableobj, idprefix, objectrepo):
 
 	return idcandidate
 # ### def _allocate_object_id
+
+
+
+def _is_empty_value(v):
+	if ( (v is None)
+			or ( isinstance(v, (str, unicode,)) and (v.upper() in ("NA", "N/A", "NEW", "-",)) ) ):
+		return True
+	return False
+# ### def _is_empty_value
 
 
 
@@ -159,6 +170,25 @@ class Story(IdentifiableObject, StoryContainer, TaskContainer, LogContainer):
 	# ### def __repr__
 
 
+	def is_empty(self):
+		""" check if the story is empty
+		"""
+
+		if ( (self.story_id is None)
+				and (self.story is None)
+				and (self.note is None)
+				and _is_empty_value(self.imp_order)
+				and _is_empty_value(self.imp_value)
+				and _is_empty_value(self.point)
+				and (self.demo_method is None)
+				and (0 == len(self.substory))
+				and (0 == len(self.subtask))
+				and (0 == len(self.logrecord)) ):
+			return True
+		return False
+	# ### def is_empty
+
+
 	def get_object_id(self):
 		return self.story_id
 	# ### def get_object_id
@@ -202,6 +232,24 @@ class Task(IdentifiableObject, TaskContainer, LogContainer):
 	# ### def __repr__
 
 
+	def is_empty(self):
+		""" check if the story is empty
+		"""
+
+		if ( (self.task_id is None)
+				and (self.task is None)
+				and (self.note is None)
+				and _is_empty_value(self.estimated_time)
+				and _is_empty_value(self.point)
+				and _is_empty_value(self.status)
+				and (self.test_method is None)
+				and (0 == len(self.subtask))
+				and (0 == len(self.logrecord)) ):
+			return True
+		return False
+	# ### def is_empty
+
+
 	def get_object_id(self):
 		return self.task_id
 	# ### def get_object_id
@@ -232,6 +280,15 @@ class Log(object):
 	def __repr__(self):
 		return "%s.Log(log_id=%r, log=%r, record_time=%r, author=%r, action=%r)" % (self.__module__, self.log_id, self.log, self.record_time, self.author, self.action,)
 	# ### def __repr__
+
+	def is_empty(self):
+		if ( (self.log_id is None)
+				and (self.log is None)
+				and (self.author is None)
+				and (self.action is None) ):
+			return True
+		return False
+	# ### def is_empty
 # ### class Log
 
 
@@ -364,6 +421,43 @@ def _convert_to_datetime(v):
 # ### def _convert_to_datetime
 
 
+def _select_scalar_style(v):
+	if isinstance(v, (str, unicode,)):
+		if "\n" in v:
+			return "|"
+	return None
+# ### def _select_scalar_style
+
+def _attach_mapping_value(mapping, mkey, mvalue, alwaysattach=False, styleselection=False):
+	if mvalue is None:
+		if False == alwaysattach:
+			return False
+		mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:null", value=u"")
+	else:
+		nodestyle = None
+		if styleselection:
+			nodestyle = _select_scalar_style(mvalue)
+		mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:str", value=mvalue, style=nodestyle)
+	
+	mapping.append( (yaml.ScalarNode(tag=u"tag:yaml.org,2002:str", value=mkey), mo,) )
+	
+	return True
+# ### def _attach_mapping_value
+
+def _attach_mapping_sequence(mapping, mkey, mseq, alwaysattach=False, flowstyle=None):
+	if 0 == len(mseq):
+		if False == alwaysattach:
+			return False
+		mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:null", value=u"")
+	else:
+		mo = yaml.SequenceNode(tag=u"tag:yaml.org,2002:seq", value=mseq, flow_style=flowstyle)
+	
+	mapping.append( (yaml.ScalarNode(tag=u'tag:yaml.org,2002:str', value=mkey), mo,) )
+	
+	return True
+# ### def _attach_mapping_sequence
+
+
 
 def load_stories(m):
 	""" load stories from m
@@ -442,7 +536,9 @@ def load_stories(m):
 				obj.append_subtask(sub_tasks)
 			if logrecords is not None:
 				obj.append_log(logrecords)
-			result = (obj,)
+			
+			if False == obj.is_empty():
+				result = (obj,)
 	return result
 # ### def load_stories
 
@@ -452,6 +548,34 @@ def prepare_story_id():
 	for story in _all_story:
 		story.prepare_story_id()
 # ### def prepare_story_id
+
+def yamlnodedump_stories(e):
+	""" dump Story object to YAML Node object
+	"""
+	
+	if isinstance(e, Story):
+		empty_node = e.is_empty()
+		
+		mapping = []
+		
+		_attach_mapping_value(mapping, u"story-id", e.story_id, empty_node, False)
+		_attach_mapping_value(mapping, u"story", e.story, empty_node, True)
+		_attach_mapping_value(mapping, u"note", e.note, empty_node, True)
+		_attach_mapping_value(mapping, u"order", e.imp_order, empty_node, False)
+		_attach_mapping_value(mapping, u"value", e.imp_value, empty_node, False)
+		_attach_mapping_value(mapping, u"point", e.point, empty_node, False)
+		_attach_mapping_sequence(mapping, u"sub-story", yamlnodedump_stories(e.substory), empty_node, False)
+		_attach_mapping_value(mapping, u"demo-method", e.demo_method, empty_node, True)
+		_attach_mapping_sequence(mapping, u"sub-task", yamlnodedump_tasks(e.subtask), empty_node, False)
+		_attach_mapping_sequence(mapping, u"log", yamlnodedump_logs(e.logrecord), empty_node, False)
+		
+		return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
+	elif isinstance(e, (list, tuple,)):
+		result = []
+		for elem in e:
+			result.append(yamlnodedump_stories(elem))
+		return result
+# ### def yamlnodedump_stories
 
 
 def load_tasks(m):
@@ -517,7 +641,9 @@ def load_tasks(m):
 				obj.append_subtask(sub_tasks)
 			if logrecords is not None:
 				obj.append_log(logrecords)
-			result = (obj,)
+
+			if False == obj.is_empty():
+				result = (obj,)
 	return result
 # ### def load_tasks
 
@@ -527,6 +653,33 @@ def prepare_task_id():
 	for task in _all_task:
 		task.prepare_task_id()
 # ### def prepare_task_id
+
+def yamlnodedump_tasks(e):
+	""" dump Task object to YAML Node object
+	"""
+	
+	if isinstance(e, Task):
+		empty_node = e.is_empty()
+		
+		mapping = []
+		
+		_attach_mapping_value(mapping, u"t-id", e.task_id, empty_node, False)
+		_attach_mapping_value(mapping, u"t", e.task, empty_node, True)
+		_attach_mapping_value(mapping, u"note", e.note, empty_node, True)
+		_attach_mapping_value(mapping, u"estimated-time", e.estimated_time, empty_node, False)
+		_attach_mapping_value(mapping, u"point", e.point, empty_node, False)
+		_attach_mapping_value(mapping, u"status", e.status, empty_node, False)
+		_attach_mapping_sequence(mapping, u"sub-task", yamlnodedump_tasks(e.subtask), empty_node, False)
+		_attach_mapping_value(mapping, u"test-method", e.test_method, empty_node, True)
+		_attach_mapping_sequence(mapping, u"log", yamlnodedump_logs(e.logrecord), empty_node, False)
+
+		return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
+	elif isinstance(e, (list, tuple,)):
+		result = []
+		for elem in e:
+			result.append(yamlnodedump_tasks(elem))
+		return result
+# ### def yamlnodedump_tasks
 
 
 def load_logs(m):
@@ -573,6 +726,30 @@ def load_logs(m):
 	return result
 # ### def load_logs
 
+def yamlnodedump_logs(e):
+	""" dump Log object to YAML Node object
+	"""
+	
+	if isinstance(e, Log):
+		empty_node = e.is_empty()
+		
+		mapping = []
+		
+		_attach_mapping_value(mapping, u"l-id", e.log_id, empty_node, False)
+		_attach_mapping_value(mapping, u"l", e.log, empty_node, True)
+		_attach_mapping_value(mapping, u"record-time", e.record_time, empty_node, False)
+		_attach_mapping_value(mapping, u"author", e.author, empty_node, False)
+		_attach_mapping_value(mapping, u"action", e.action, empty_node, False)
+
+		return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
+	elif isinstance(e, (list, tuple,)):
+		result = []
+		for elem in e:
+			result.append(yamlnodedump_logs(elem))
+		return result
+# ### def yamlnodedump_logs
+
+
 
 class DevelopmentProject(object):
 	def __init__(self, product_backlog, tracked_issue):
@@ -580,7 +757,6 @@ class DevelopmentProject(object):
 		self.tracked_issue = tracked_issue
 	# ### def __init__
 # ### class DevelopmentProject
-
 
 def load_project(c):
 	""" load dp document
