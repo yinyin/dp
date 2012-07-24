@@ -7,6 +7,7 @@ import re
 import hashlib
 import base64
 import datetime
+import shutil
 
 import yaml
 
@@ -287,7 +288,8 @@ class Log(object):
 		
 		if not self.is_empty():
 			if self.record_time is None:
-				self.record_time = datetime.datetime.now()
+				n = datetime.datetime.now()
+				self.record_time = datetime.datetime(n.year, n.month, n.day, n.hour, n.minute, n.second)
 			if self.author is None:
 				self.author = _rt_config.username
 	# ### def __init__
@@ -946,7 +948,7 @@ def do_backup_project(filename, maxbackup=9):
 			os.rename(prv_filename, tgt_filename)
 	
 	tgt_filename = ".".join( (filename, "1") )
-	os.rename(filename, tgt_filename)
+	shutil.copy(filename, tgt_filename)
 # ### def do_backup_project
 
 
