@@ -143,7 +143,7 @@ _all_task = []
 
 
 class Story(IdentifiableObject, StoryContainer, TaskContainer, LogContainer):
-	def __init__(self, story_id, story, note, imp_order, imp_value, point, demo_method, sort_order_key=None, *args, **kwargs):
+	def __init__(self, story_id=None, story=None, note=None, imp_order=None, imp_value=None, point=None, demo_method=None, sort_order_key=None, *args, **kwargs):
 		super(Story, self).__init__(*args, **kwargs)
 
 		self.story_id = story_id
@@ -210,7 +210,7 @@ class Story(IdentifiableObject, StoryContainer, TaskContainer, LogContainer):
 # ### class Story
 
 class Task(IdentifiableObject, TaskContainer, LogContainer):
-	def __init__(self, task_id, task, note, estimated_time, point, status, test_method, *args, **kwargs):
+	def __init__(self, task_id=None, task=None, note=None, estimated_time=None, point=None, status=None, test_method=None, *args, **kwargs):
 		super(Task, self).__init__(*args, **kwargs)
 
 		self.task_id = task_id
