@@ -531,8 +531,8 @@ def load_stories(m):
 		if "sub-story" in m:
 			sub_stories = load_stories(m["sub-story"])
 			is_accepted_any_attribute = True
-		if "sub-task" in m:
-			sub_tasks = load_tasks(m["sub-task"])
+		if "task" in m:
+			sub_tasks = load_tasks(m["task"])
 			is_accepted_any_attribute = True
 		if "log" in m:
 			logrecords = load_logs(m["log"])
@@ -576,7 +576,7 @@ def yamlnodedump_stories(e):
 		_attach_mapping_value(mapping, u"point", e.point, empty_node, False)
 		_attach_mapping_sequence(mapping, u"sub-story", yamlnodedump_stories(e.substory), empty_node, False)
 		_attach_mapping_value(mapping, u"demo-method", e.demo_method, empty_node, True)
-		_attach_mapping_sequence(mapping, u"sub-task", yamlnodedump_tasks(e.subtask), empty_node, False)
+		_attach_mapping_sequence(mapping, u"task", yamlnodedump_tasks(e.subtask), empty_node, False)
 		_attach_mapping_sequence(mapping, u"log", yamlnodedump_logs(e.logrecord), empty_node, False)
 		
 		return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
