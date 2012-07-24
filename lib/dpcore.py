@@ -597,6 +597,10 @@ def load_project(c):
 		product_backlog = load_stories(c)
 	
 	dpobj = DevelopmentProject(product_backlog, tracked_issue)
+	
+	prepare_story_id()
+	prepare_task_id()
+	
 	return dpobj
 # ### def load_project
 
