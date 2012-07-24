@@ -1,6 +1,8 @@
 
 # -*- coding: utf-8 -*-
 
+import os
+import sys
 import re
 import hashlib
 import base64
@@ -8,6 +10,9 @@ import datetime
 
 import yaml
 
+
+
+_rt_config = None	# runtime configuration
 
 
 class IdentifiableObject(object):
@@ -751,10 +756,15 @@ def yamlnodedump_logs(e):
 
 
 
-class DevelopmentProject(object):
+class DevelopmentProject(StoryContainer):
 	def __init__(self, product_backlog, tracked_issue):
+		
+		super(DevelopmentProject, self).__init__()
+		
 		self.product_backlog = product_backlog
 		self.tracked_issue = tracked_issue
+		
+		self.substory = self.product_backlog
 	# ### def __init__
 # ### class DevelopmentProject
 
@@ -780,6 +790,158 @@ def load_project(c):
 	return dpobj
 # ### def load_project
 
+def yamlnodedump_project(e):
 
+	mapping = []
+	
+	if e.product_backlog is not None:
+		sobj = yamlnodedump_stories(e.product_backlog)
+		_attach_mapping_sequence(mapping, "product-backlog", sobj, False, False)
+	if e.tracked_issue is not None:
+		pass	# TODO
+	
+	return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
+# ### def yamlnodedump_project
+
+def read_project(filename):
+	fp = open(filename, "r")
+	c = yaml.load(fp)
+	return load_project(c)
+# ### def read_project
+
+def write_project(filename, proj):
+	yml = yaml.serialize(yamlnodedump_project(proj))
+	fp = open(filename, "w")
+	fp.write(yml)
+	fp.close()
+# ### def write_project
+
+
+class RuntimeConfiguration(object):
+	def __init__(self, username, active_projfile, archive_projfile):
+		self.username = username
+		self.active_projfile = active_projfile
+		self.archive_projfile = archive_projfile
+	# ### def __init__
+# ### class RuntimeConfiguration
+
+def read_runtimeconfig(filename):
+	fp = open(filename, "r")
+	c = yaml.load(fp)
+	
+	username = None
+	if "DP_USERNAME" in os.environ:
+		username = os.environ["DP_USERNAME"]
+	elif "username" in c:
+		username = c["username"]
+		
+	active_projfile = c["dp-active"]
+	archive_projfile = None
+	if "dp-archive" in c:
+		archive_projfile = c["dp-archive"]
+	
+	return RuntimeConfiguration(username, active_projfile, archive_projfile)
+# ### def read_runtimeconfig
+
+
+
+def command_noop(proj, args):
+	""" respond to "rebuild", "r.b.", "rb", "r" command
+	"""
+	return True
+# ### def command_noop
+
+def command_add_story(proj, args):
+	""" respond to "add-story", "addstory", "a.s.", "as" command
+	"""
+	
+	add_after = None
+	
+	if len(args) >= 1:
+		add_after = args[0]
+	
+	nobj = Story()
+	if add_after is None:
+		proj.append_substory(nobj)
+	elif add_after in _every_object:
+		_every_object[add_after].append_substory(nobj)
+	else:
+		print "ERR: parent object not found: [%r]" % (add_after,)
+		return False
+	
+	return True
+# ### def command_add_story
+
+def command_add_task(proj, args):
+	""" respond to "add-task", "addtask", "a.t.", "at" command
+	"""
+	
+	add_after = None
+	
+	if len(args) >= 1:
+		add_after = args[0]
+	
+	nobj = Task()
+	if add_after is None:
+		proj.append_subtask(nobj)
+	elif add_after in _every_object:
+		_every_object[add_after].append_subtask(nobj)
+	else:
+		print "ERR: parent object not found: [%r]" % (add_after,)
+		return False
+	
+	return True
+# ### def command_add_task
+
+def do_backup_project(filename, maxbackup=9):
+	for idx in range(maxbackup, 1, -1):
+		tgt_filename = ".".join(filename, str(idx))
+		prv_filename = ".".join(filename, str(idx-1))
+		try:
+			os.unlink(tgt_filename)
+		except:
+			pass
+		os.rename(prv_filename, tgt_filename)
+	
+	tgt_filename = ".".join(filename, "1")
+	os.rename(filename, tgt_filename)
+# ### def do_backup_project
+
+
+def main():
+	_rt_config = read_runtimeconfig(".dprc")
+	
+	cmdfunc = None
+	cmdargs = []
+	
+	for opt in sys.argv:
+		if cmdfunc is not None:
+			cmdargs.append(opt)
+		elif opt in ("add-story", "addstory", "a.s.", "as",):
+			cmdfunc = command_add_story
+		elif opt in ("add-task", "addtask", "a.t.", "at",):
+			cmdfunc = command_add_task
+		elif opt in ("rebuild", "r.b.", "rb", "r",):
+			cmdfunc = command_noop
+	
+	if cmdfunc is None:
+		print "ERR: no command"
+		sys.exit(1)
+
+	proj = read_project(_rt_config.active_projfile)
+	
+	if not command_add_story(proj, cmdargs):
+		sys.exit(3)
+	
+	do_backup_project(_rt_config.active_projfile)
+	write_project(_rt_config.active_projfile, proj)
+	
+	sys.exit(0)
+# ### def main
+
+
+
+if __name__ == '__main__':
+	main()
 
 # vim: ts=4 sw=4 ai nowarp
