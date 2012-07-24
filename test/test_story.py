@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import yaml
 
 import testing_common
 
@@ -76,6 +77,50 @@ class TestStoriesLoad(unittest.TestCase):
 		self.assertTrue(storylist[0].story_id is not None)
 	# ### def test_load_stories_6
 # ### class TestStoriesLoad
+
+
+class TestStoryYAMLnodeDump(unittest.TestCase):
+	""" test yamlnodedump_stories() function """
+	
+	def test_dump_1(self):
+		""" generate node object for 1 story """
+		
+		m = "This is a story"
+		storylist_orig = dpcore.load_stories(m)
+		
+		nodelist = dpcore.yamlnodedump_stories(storylist_orig[0])
+		
+		yml = yaml.serialize(nodelist)
+		#print yml
+		c = yaml.load(yml)
+		
+		storylist_comp = dpcore.load_stories(c)
+		self.assertEqual(storylist_comp[0].story, storylist_orig[0].story)
+		self.assertEqual(storylist_comp[0].note, storylist_orig[0].note)
+	# ### def test_dump_1
+	
+	def test_dump_2(self):
+		""" generate node object2 for 2 story """
+		
+		m = ["This is story 1.", {"story": "This is story 2.", "sub-story": "This is a substory.\nwhich have 2 lines.",}]
+		storylist_orig = dpcore.load_stories(m)
+		
+		self.assertEqual(1, len(storylist_orig[1].substory))
+		
+		nodeobjlist = dpcore.yamlnodedump_stories(storylist_orig)
+		nodelist = yaml.SequenceNode(tag=u"tag:yaml.org,2002:seq", value=nodeobjlist, flow_style=False)
+		
+		yml = yaml.serialize(nodelist)
+		#print yml
+		c = yaml.load(yml)
+		
+		storylist_comp = dpcore.load_stories(c)
+		for idx in range(2):
+			self.assertEqual(storylist_comp[idx].story, storylist_orig[idx].story)
+			self.assertEqual(storylist_comp[idx].note, storylist_orig[idx].note)
+		self.assertEqual(1, len(storylist_comp[1].substory))
+	# ### def test_dump_2
+# ### class TestStoryYAMLnodeDump
 
 
 class MockStoryContainer_1(dpcore.StoryContainer):
