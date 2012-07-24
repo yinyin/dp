@@ -4,5 +4,6 @@
 ._*
 .DS_Store
 
+bin/dp
 dp-log/dp.txt.*
 

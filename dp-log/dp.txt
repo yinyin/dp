@@ -67,6 +67,9 @@ product-backlog:
 - story-id: CSY1WYmZXaiBpPoHTCpon1Q
   story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔以及使用者識別資訊，當找不到時往上層資料夾找
   note: 使用者識別資訊先放環境變數，以簡單實作
+  task:
+  - t-id: TXVPivGH8QqS3DIIvg1ROMA
+    t: 在目前目錄找尋設定檔，並讀取之
 - story-id: CBEgYHETdlnZTisvRoiyD4g
   story: 管理 issue (增加 issue-backlog ?)
 - story-id: C7wO9uUlf5NIV4pf3AgOhTg
