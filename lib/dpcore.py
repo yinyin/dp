@@ -253,6 +253,10 @@ class Task(IdentifiableObject, TaskContainer, LogContainer):
 			return True
 		return False
 	# ### def is_empty
+	
+	def set_status(self, new_status):
+		self.status = new_status
+	# ### def set_status
 
 
 	def get_object_id(self):
@@ -271,7 +275,7 @@ class Task(IdentifiableObject, TaskContainer, LogContainer):
 # ### class Task
 
 class Log(object):
-	def __init__(self, log_id, log, record_time, author, action=None, *args, **kwargs):
+	def __init__(self, log_id=None, log=None, record_time=None, author=None, action=None, *args, **kwargs):
 
 		super(Log, self).__init__(*args, **kwargs)
 
@@ -280,6 +284,12 @@ class Log(object):
 		self.record_time = record_time
 		self.author = author
 		self.action = action
+		
+		if not self.is_empty():
+			if self.record_time is None:
+				self.record_time = datetime.datetime.now()
+			if self.author is None:
+				self.author = _rt_config.username
 	# ### def __init__
 
 	def __repr__(self):
@@ -901,6 +911,29 @@ def command_add_task(proj, args):
 	return True
 # ### def command_add_task
 
+def command_mark_complete(proj, args):
+	""" respond to "done", "complete" command
+	"""
+	
+	add_after = None
+	
+	if len(args) >= 1:
+		add_after = args[0]
+	else:
+		print "ERR: need object ID to mark done"
+		return False
+	
+	if add_after in _every_object:
+		t = _every_object[add_after]
+		t.set_status("DONE")
+		t.append_log(Log(log="mark task as done."))
+	else:
+		print "ERR: object for done is not found: [%r]" % (add_after,)
+		return False
+	
+	return True
+# ### def command_mark_complete
+
 def do_backup_project(filename, maxbackup=9):
 	for idx in range(maxbackup, 1, -1):
 		tgt_filename = ".".join( (filename, str(idx)) )
@@ -918,6 +951,7 @@ def do_backup_project(filename, maxbackup=9):
 
 
 def main():
+	global _rt_config
 	_rt_config = read_runtimeconfig(".dprc")
 	
 	cmdfunc = None
@@ -930,6 +964,8 @@ def main():
 			cmdfunc = command_add_story
 		elif opt in ("add-task", "addtask", "a.t.", "at",):
 			cmdfunc = command_add_task
+		elif opt in ("done", "complete",):
+			cmdfunc = command_mark_complete
 		elif opt in ("rebuild", "r.b.", "rb", "r",):
 			cmdfunc = command_noop
 	
