@@ -3,6 +3,7 @@
 
 import datetime
 import unittest
+import yaml
 
 import testing_common
 
@@ -64,6 +65,47 @@ class TestLogLoad(unittest.TestCase):
 		self.assertEqual(m["author"], loglist[0].author)
 	# ### def test_load_logs_6
 # ### class TestLogLoad
+
+
+class TestLogYAMLnodeDump(unittest.TestCase):
+	""" test yamlnodedump_logs() function """
+	
+	def test_dump_1(self):
+		""" generate node object for 1 log """
+		
+		m = "This is a log record"
+		loglist_orig = dpcore.load_logs(m)
+		
+		nodelist = dpcore.yamlnodedump_logs(loglist_orig[0])
+		
+		yml = yaml.serialize(nodelist)
+		#print yml
+		c = yaml.load(yml)
+		
+		loglist_comp = dpcore.load_logs(c)
+		self.assertEqual(loglist_comp[0].log, loglist_orig[0].log)
+		self.assertEqual(loglist_comp[0].action, loglist_orig[0].action)
+	# ### def test_dump_1
+	
+	def test_dump_2(self):
+		""" generate node object2 for 2 task """
+		
+		m = ["This is log 1.", "this is log message 2."]
+		loglist_orig = dpcore.load_logs(m)
+		
+		nodeobjlist = dpcore.yamlnodedump_logs(loglist_orig)
+		nodelist = yaml.SequenceNode(tag=u"tag:yaml.org,2002:seq", value=nodeobjlist, flow_style=False)
+		
+		yml = yaml.serialize(nodelist)
+		#print yml
+		c = yaml.load(yml)
+		
+		loglist_comp = dpcore.load_logs(c)
+		for idx in range(2):
+			self.assertEqual(loglist_comp[idx].log, loglist_orig[idx].log)
+			self.assertEqual(loglist_comp[idx].action, loglist_orig[idx].action)
+	# ### def test_dump_2
+# ### class TestLogYAMLnodeDump
 
 
 class MockLogContainer_1(dpcore.LogContainer):
