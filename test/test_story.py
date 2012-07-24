@@ -102,10 +102,11 @@ class TestStoryYAMLnodeDump(unittest.TestCase):
 	def test_dump_2(self):
 		""" generate node object2 for 2 story """
 		
-		m = ["This is story 1.", {"story": "This is story 2.", "sub-story": "This is a substory.\nwhich have 2 lines.",}]
+		m = ["This is story 1.", {"story": "This is story 2.", "sub-story": "This is a substory.\nwhich have 2 lines.", "task": "task 1.",}]
 		storylist_orig = dpcore.load_stories(m)
 		
 		self.assertEqual(1, len(storylist_orig[1].substory))
+		self.assertEqual(1, len(storylist_orig[1].subtask))
 		
 		nodeobjlist = dpcore.yamlnodedump_stories(storylist_orig)
 		nodelist = yaml.SequenceNode(tag=u"tag:yaml.org,2002:seq", value=nodeobjlist, flow_style=False)
@@ -119,6 +120,7 @@ class TestStoryYAMLnodeDump(unittest.TestCase):
 			self.assertEqual(storylist_comp[idx].story, storylist_orig[idx].story)
 			self.assertEqual(storylist_comp[idx].note, storylist_orig[idx].note)
 		self.assertEqual(1, len(storylist_comp[1].substory))
+		self.assertEqual(1, len(storylist_comp[1].subtask))
 	# ### def test_dump_2
 # ### class TestStoryYAMLnodeDump
 
