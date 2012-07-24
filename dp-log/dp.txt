@@ -20,10 +20,18 @@ product-backlog:
       status: DONE
       log:
       - l: mark task as done.
-        record-time: 2012-07-24 18:40:49.516715
+        record-time: 2012-07-24 18:40:49
         author: Yinyin L <yinyin@pisces.local>
   - story-id: Cqq28BRXWH70ZmfX60xVwPA
     story: rebuild 時整理與給定產生 log 的時間
+    task:
+    - t-id: TELS6qH02CTdclq1as7HhNw
+      t: 檢查當不是空的 log 物件時，就設定時間
+      status: DONE
+      log:
+      - l: mark task as done.
+        record-time: 2012-07-24 18:51:58
+        author: Yinyin L <yinyin@pisces.local>
   - story-id: CU4Iyw7fnlgeSMVncjMMYXg
     story: project-backlog 與 task 下的 item 如果是單純的值的話就自動變成 story 或 t 物件
   demo-method: '* 執行 rebuild 然後看結果'
