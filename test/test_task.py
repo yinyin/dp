@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import yaml
 
 import testing_common
 
@@ -77,6 +78,50 @@ class TestTaskLoad(unittest.TestCase):
 		self.assertTrue(tasklist[0].task_id is not None)
 	# ### def test_load_tasks_6
 # ### class TestTaskLoad
+
+
+class TestTaskYAMLnodeDump(unittest.TestCase):
+	""" test yamlnodedump_tasks() function """
+	
+	def test_dump_1(self):
+		""" generate node object for 1 task """
+		
+		m = "This is a task"
+		tasklist_orig = dpcore.load_tasks(m)
+		
+		nodelist = dpcore.yamlnodedump_tasks(tasklist_orig[0])
+		
+		yml = yaml.serialize(nodelist)
+		#print yml
+		c = yaml.load(yml)
+		
+		tasklist_comp = dpcore.load_tasks(c)
+		self.assertEqual(tasklist_comp[0].task, tasklist_orig[0].task)
+		self.assertEqual(tasklist_comp[0].note, tasklist_orig[0].note)
+	# ### def test_dump_1
+	
+	def test_dump_2(self):
+		""" generate node object2 for 2 task """
+		
+		m = ["This is task 1.", {"t": "This is task 2.", "sub-task": "This is a subtask.\nwhich have 2 lines.",}]
+		tasklist_orig = dpcore.load_tasks(m)
+		
+		self.assertEqual(1, len(tasklist_orig[1].subtask))
+		
+		nodeobjlist = dpcore.yamlnodedump_tasks(tasklist_orig)
+		nodelist = yaml.SequenceNode(tag=u"tag:yaml.org,2002:seq", value=nodeobjlist, flow_style=False)
+		
+		yml = yaml.serialize(nodelist)
+		#print yml
+		c = yaml.load(yml)
+		
+		tasklist_comp = dpcore.load_tasks(c)
+		for idx in range(2):
+			self.assertEqual(tasklist_comp[idx].task, tasklist_orig[idx].task)
+			self.assertEqual(tasklist_comp[idx].note, tasklist_orig[idx].note)
+		self.assertEqual(1, len(tasklist_comp[1].subtask))
+	# ### def test_dump_2
+# ### class TestStoryYAMLnodeDump
 
 
 class MockTaskContainer_1(dpcore.TaskContainer):
