@@ -446,6 +446,8 @@ def _attach_mapping_value(mapping, mkey, mvalue, alwaysattach=False, styleselect
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:float", value=unicode(mvalue), style=nodestyle)
 		elif isinstance(mvalue, int):
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:int", value=unicode(mvalue), style=nodestyle)
+		elif isinstance(mvalue, datetime.datetime):
+			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:timestamp", value=unicode(mvalue), style=nodestyle)
 		else:
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:str", value=unicode(mvalue), style=nodestyle)
 	
