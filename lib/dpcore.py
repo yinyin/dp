@@ -831,7 +831,7 @@ def read_project(filename):
 def write_project(filename, proj):
 	fp = open(filename, "w")
 	yml = yaml.serialize(yamlnodedump_project(proj), stream=fp, encoding='utf-8', allow_unicode=True)
-	print repr(yml)
+	#print repr(yml)
 	#fp.write(yml)
 	fp.close()
 # ### def write_project
