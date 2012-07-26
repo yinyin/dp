@@ -77,6 +77,19 @@ product-backlog:
   order: low
 - story-id: CYPQV1AHmYevCXeO1v1do0g
   story: 標示 task 狀況為 done 的指令
+  task:
+  - t-id: T0TtvAXLuEqwZAQEwgZwZUA
+    t: 標示 task 狀況為 done 並產生 log 物件
+    status: DONE (2012-07-26 13:13:23)
+    log:
+    - l: mark task as done.
+      record-time: 2012-07-26 13:13:23
+  - t-id: To9M2jIpZaArrAHYq38T40A
+    t: 將時戳附加在 status 標記中
+    status: DONE (2012-07-26 13:13:56)
+    log:
+    - l: mark task as done.
+      record-time: 2012-07-26 13:13:56
 - story-id: CSY1WYmZXaiBpPoHTCpon1Q
   story: 執行時檢查是否有 .mydp 定義檔，來找尋要載入的 dp 檔以及使用者識別資訊，當找不到時往上層資料夾找
   note: 使用者識別資訊先放環境變數，以簡單實作
