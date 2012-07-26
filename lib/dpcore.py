@@ -254,7 +254,7 @@ class Task(IdentifiableObject, TaskContainer, LogContainer):
 			return True
 		return False
 	# ### def is_empty
-	
+
 	def set_status(self, new_status):
 		self.status = new_status
 	# ### def set_status
@@ -285,7 +285,7 @@ class Log(object):
 		self.record_time = record_time
 		self.author = author
 		self.action = action
-		
+
 		if not self.is_empty():
 			if self.record_time is None:
 				n = datetime.datetime.now()
@@ -462,9 +462,9 @@ def _attach_mapping_value(mapping, mkey, mvalue, alwaysattach=False, styleselect
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:timestamp", value=unicode(mvalue), style=nodestyle)
 		else:
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:str", value=unicode(mvalue), style=nodestyle)
-	
+
 	mapping.append( (yaml.ScalarNode(tag=u"tag:yaml.org,2002:str", value=mkey), mo,) )
-	
+
 	return True
 # ### def _attach_mapping_value
 
@@ -475,11 +475,32 @@ def _attach_mapping_sequence(mapping, mkey, mseq, alwaysattach=False, flowstyle=
 		mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:null", value=u"")
 	else:
 		mo = yaml.SequenceNode(tag=u"tag:yaml.org,2002:seq", value=mseq, flow_style=flowstyle)
-	
+
 	mapping.append( (yaml.ScalarNode(tag=u'tag:yaml.org,2002:str', value=mkey), mo,) )
-	
+
 	return True
 # ### def _attach_mapping_sequence
+
+
+def _check_string_prefix(val, prefixv):
+	""" check if the given string have specified prefix
+
+	Argument:
+		val - string to be checked
+		prefixv - prefix to match
+	Return:
+		True when given string have specified prefix, False otherwise
+	"""
+
+	l = len(prefixv)
+
+	if l > len(val):
+		return False
+	v = val[:l].upper()
+	if v == prefixv:
+		return True
+	return False
+# ### def _check_string_prefix
 
 
 
@@ -560,7 +581,7 @@ def load_stories(m):
 				obj.append_subtask(sub_tasks)
 			if logrecords is not None:
 				obj.append_log(logrecords)
-			
+
 			if False == obj.is_empty():
 				result = (obj,)
 	return result
@@ -576,12 +597,12 @@ def prepare_story_id():
 def yamlnodedump_stories(e):
 	""" dump Story object to YAML Node object
 	"""
-	
+
 	if isinstance(e, Story):
 		empty_node = e.is_empty()
-		
+
 		mapping = []
-		
+
 		_attach_mapping_value(mapping, u"story-id", e.story_id)
 		_attach_mapping_value(mapping, u"story", e.story, empty_node, True)
 		_attach_mapping_value(mapping, u"note", e.note, empty_node, True)
@@ -592,7 +613,7 @@ def yamlnodedump_stories(e):
 		_attach_mapping_value(mapping, u"demo-method", e.demo_method, empty_node, True)
 		_attach_mapping_sequence(mapping, u"task", yamlnodedump_tasks(e.subtask), empty_node, False)
 		_attach_mapping_sequence(mapping, u"log", yamlnodedump_logs(e.logrecord), empty_node, False)
-		
+
 		return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
 	elif isinstance(e, (list, tuple,)):
 		result = []
@@ -681,12 +702,12 @@ def prepare_task_id():
 def yamlnodedump_tasks(e):
 	""" dump Task object to YAML Node object
 	"""
-	
+
 	if isinstance(e, Task):
 		empty_node = e.is_empty()
-		
+
 		mapping = []
-		
+
 		_attach_mapping_value(mapping, u"t-id", e.task_id)
 		_attach_mapping_value(mapping, u"t", e.task, empty_node, True)
 		_attach_mapping_value(mapping, u"note", e.note, empty_node, True)
@@ -753,12 +774,12 @@ def load_logs(m):
 def yamlnodedump_logs(e):
 	""" dump Log object to YAML Node object
 	"""
-	
+
 	if isinstance(e, Log):
 		empty_node = e.is_empty()
-		
+
 		mapping = []
-		
+
 		_attach_mapping_value(mapping, u"l-id", e.log_id)
 		_attach_mapping_value(mapping, u"l", e.log, empty_node, True)
 		_attach_mapping_value(mapping, u"record-time", e.record_time, empty_node, False)
@@ -777,12 +798,12 @@ def yamlnodedump_logs(e):
 
 class DevelopmentProject(StoryContainer):
 	def __init__(self, product_backlog, tracked_issue):
-		
+
 		super(DevelopmentProject, self).__init__()
-		
+
 		self.product_backlog = product_backlog
 		self.tracked_issue = tracked_issue
-		
+
 		self.substory = self.product_backlog
 	# ### def __init__
 # ### class DevelopmentProject
@@ -793,32 +814,32 @@ def load_project(c):
 
 	product_backlog = None
 	tracked_issue = None
-	
+
 	if "product-backlog" in c:
 		product_backlog = load_stories(c["product-backlog"])
-		
+
 		# TODO: load issues
 	else:
 		product_backlog = load_stories(c)
-	
+
 	dpobj = DevelopmentProject(product_backlog, tracked_issue)
-	
+
 	prepare_story_id()
 	prepare_task_id()
-	
+
 	return dpobj
 # ### def load_project
 
 def yamlnodedump_project(e):
 
 	mapping = []
-	
+
 	if e.product_backlog is not None:
 		sobj = yamlnodedump_stories(e.product_backlog)
 		_attach_mapping_sequence(mapping, "product-backlog", sobj, False, False)
 	if e.tracked_issue is not None:
 		pass	# TODO
-	
+
 	return yaml.MappingNode(tag=u"tag:yaml.org,2002:map", value=mapping, flow_style=False)
 # ### def yamlnodedump_project
 
@@ -848,18 +869,18 @@ class RuntimeConfiguration(object):
 def read_runtimeconfig(filename):
 	fp = open(filename, "r")
 	c = yaml.load(fp)
-	
+
 	username = None
 	if "DP_USERNAME" in os.environ:
 		username = os.environ["DP_USERNAME"]
 	elif "username" in c:
 		username = c["username"]
-		
+
 	active_projfile = c["dp-active"]
 	archive_projfile = None
 	if "dp-archive" in c:
 		archive_projfile = c["dp-archive"]
-	
+
 	return RuntimeConfiguration(username, active_projfile, archive_projfile)
 # ### def read_runtimeconfig
 
@@ -874,12 +895,12 @@ def command_noop(proj, args):
 def command_add_story(proj, args):
 	""" respond to "add-story", "addstory", "a.s.", "as" command
 	"""
-	
+
 	add_after = None
-	
+
 	if len(args) >= 1:
 		add_after = args[0]
-	
+
 	nobj = Story()
 	if add_after is None:
 		proj.append_substory(nobj)
@@ -888,19 +909,19 @@ def command_add_story(proj, args):
 	else:
 		print "ERR: parent object not found: [%r]" % (add_after,)
 		return False
-	
+
 	return True
 # ### def command_add_story
 
 def command_add_task(proj, args):
 	""" respond to "add-task", "addtask", "a.t.", "at" command
 	"""
-	
+
 	add_after = None
-	
+
 	if len(args) >= 1:
 		add_after = args[0]
-	
+
 	nobj = Task()
 	if add_after is None:
 		proj.append_subtask(nobj)
@@ -909,22 +930,22 @@ def command_add_task(proj, args):
 	else:
 		print "ERR: parent object not found: [%r]" % (add_after,)
 		return False
-	
+
 	return True
 # ### def command_add_task
 
 def command_mark_complete(proj, args):
 	""" respond to "done", "complete" command
 	"""
-	
+
 	add_after = None
-	
+
 	if len(args) >= 1:
 		add_after = args[0]
 	else:
 		print "ERR: need object ID to mark done"
 		return False
-	
+
 	if add_after in _every_object:
 		t = _every_object[add_after]
 		t.set_status("DONE")
@@ -932,7 +953,7 @@ def command_mark_complete(proj, args):
 	else:
 		print "ERR: object for done is not found: [%r]" % (add_after,)
 		return False
-	
+
 	return True
 # ### def command_mark_complete
 
@@ -946,7 +967,7 @@ def do_backup_project(filename, maxbackup=9):
 			pass
 		if os.access(prv_filename, os.F_OK):
 			os.rename(prv_filename, tgt_filename)
-	
+
 	tgt_filename = ".".join( (filename, "1") )
 	shutil.copy(filename, tgt_filename)
 # ### def do_backup_project
@@ -955,10 +976,10 @@ def do_backup_project(filename, maxbackup=9):
 def main():
 	global _rt_config
 	_rt_config = read_runtimeconfig(".dprc")
-	
+
 	cmdfunc = None
 	cmdargs = []
-	
+
 	for opt in sys.argv:
 		if cmdfunc is not None:
 			cmdargs.append(opt)
@@ -970,19 +991,19 @@ def main():
 			cmdfunc = command_mark_complete
 		elif opt in ("rebuild", "r.b.", "rb", "r",):
 			cmdfunc = command_noop
-	
+
 	if cmdfunc is None:
 		print "ERR: no command"
 		sys.exit(1)
 
 	proj = read_project(_rt_config.active_projfile)
-	
+
 	if not cmdfunc(proj, cmdargs):
 		sys.exit(3)
-	
+
 	do_backup_project(_rt_config.active_projfile)
 	write_project(_rt_config.active_projfile, proj)
-	
+
 	sys.exit(0)
 # ### def main
 
