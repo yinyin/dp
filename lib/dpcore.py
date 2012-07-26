@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import os
@@ -1024,6 +1024,8 @@ def main():
 
 	do_backup_project(_rt_config.active_projfile)
 	write_project(_rt_config.active_projfile, proj)
+
+	print 'OK'
 
 	sys.exit(0)
 # ### def main
