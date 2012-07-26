@@ -118,6 +118,21 @@ def _check_string_prefix(val, prefixv):
 # ### def _check_string_prefix
 
 
+def _get_tstamp_string(tstamp=None):
+	""" return timestamp in string form
+
+	Argument:
+		tstamp - the timestamp, will use current time if None
+	Return:
+		string form of timestamp in YYYY-MM-DD hh:mm:ss
+	"""
+
+	if tstamp is None:
+		tstamp = datetime.datetime.now()
+	return "%04d-%02d-%02d %02d:%02d:%02d" % (tstamp.year, tstamp.month, tstamp.day, tstamp.hour, tstamp.minute, tstamp.second,)
+# ### def _get_tstamp_string
+
+
 
 class StoryContainer(object):
 	def __init__(self, *args, **kwargs):
@@ -284,7 +299,7 @@ class Task(IdentifiableObject, TaskContainer, LogContainer):
 	# ### def is_empty
 
 	def set_status(self, new_status):
-		self.status = new_status
+		self.status = "%s (%s)" % (new_status, _get_tstamp_string(),)
 	# ### def set_status
 
 
@@ -316,8 +331,7 @@ class Log(object):
 
 		if not self.is_empty():
 			if self.record_time is None:
-				n = datetime.datetime.now()
-				self.record_time = datetime.datetime(n.year, n.month, n.day, n.hour, n.minute, n.second)
+				self.record_time = datetime.datetime.now()
 			if self.author is None:
 				self.author = _rt_config.username
 	# ### def __init__
@@ -487,7 +501,7 @@ def _attach_mapping_value(mapping, mkey, mvalue, alwaysattach=False, styleselect
 		elif isinstance(mvalue, int):
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:int", value=unicode(mvalue), style=nodestyle)
 		elif isinstance(mvalue, datetime.datetime):
-			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:timestamp", value=unicode(mvalue), style=nodestyle)
+			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:timestamp", value=_get_tstamp_string(mvalue), style=nodestyle)
 		else:
 			mo = yaml.ScalarNode(tag=u"tag:yaml.org,2002:str", value=unicode(mvalue), style=nodestyle)
 
