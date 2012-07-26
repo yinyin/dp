@@ -83,11 +83,39 @@ def allocate_object_id(idableobj, idprefix, objectrepo):
 
 
 def _is_empty_value(v):
+	""" check if the given value is/presents empty value
+
+	Argument:
+		v - the value to be check
+	Return:
+		True is given value is empty, False otherwise
+	"""
+
 	if ( (v is None)
 			or ( isinstance(v, (str, unicode,)) and (v.upper() in ("NA", "N/A", "NEW", "-",)) ) ):
 		return True
 	return False
 # ### def _is_empty_value
+
+def _check_string_prefix(val, prefixv):
+	""" check if the given string have specified prefix
+
+	Argument:
+		val - string to be checked
+		prefixv - prefix to match
+	Return:
+		True when given string have specified prefix, False otherwise
+	"""
+
+	l = len(prefixv)
+
+	if l > len(val):
+		return False
+	v = val[:l].upper()
+	if v == prefixv:
+		return True
+	return False
+# ### def _check_string_prefix
 
 
 
@@ -480,27 +508,6 @@ def _attach_mapping_sequence(mapping, mkey, mseq, alwaysattach=False, flowstyle=
 
 	return True
 # ### def _attach_mapping_sequence
-
-
-def _check_string_prefix(val, prefixv):
-	""" check if the given string have specified prefix
-
-	Argument:
-		val - string to be checked
-		prefixv - prefix to match
-	Return:
-		True when given string have specified prefix, False otherwise
-	"""
-
-	l = len(prefixv)
-
-	if l > len(val):
-		return False
-	v = val[:l].upper()
-	if v == prefixv:
-		return True
-	return False
-# ### def _check_string_prefix
 
 
 
