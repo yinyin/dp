@@ -561,8 +561,14 @@ def load_stories(m):
 		if "story" in m:
 			story = _convert_to_string(m["story"])
 			is_accepted_any_attribute = True
+		elif "s" in m:
+			story = _convert_to_string(m["s"])
+			is_accepted_any_attribute = True
 		if "note" in m:
 			note = _convert_to_string(m["note"])
+			is_accepted_any_attribute = True
+		elif "n" in m:
+			note = _convert_to_string(m["n"])
 			is_accepted_any_attribute = True
 		if "order" in m:
 			imp_order = _convert_to_string(m["order"])
