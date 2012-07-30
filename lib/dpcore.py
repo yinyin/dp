@@ -686,6 +686,9 @@ def load_tasks(m):
 		if "note" in m:
 			note = _convert_to_string(m["note"])
 			is_accepted_any_attribute = True
+		elif "n" in m:
+			note = _convert_to_string(m["n"])
+			is_accepted_any_attribute = True
 		if "estimated-time" in m:
 			estimated_time = _convert_to_integer(m["estimated-time"])
 			is_accepted_any_attribute = True
